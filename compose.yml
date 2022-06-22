@@ -1,0 +1,26 @@
+version: "2.4"
+services:
+  reverse-proxy:
+    image: bitnami/nginx:1.22.0-debian-11-r8
+    user: ${REVERSE_PROXY_CONTAINER_USER}
+    ports:
+      - "80:8080"
+      - "443:8443"
+    volumes:
+      - ${NGINX_CONF}:/opt/bitnami/nginx/conf/server_blocks/vhost.conf:ro
+  web:
+    image: bitnami/node:16.15.1-debian-11-r5
+    user: ${WEB_CONTAINER_USER}
+  database:
+    image: bitnami/postgresql:14.4.0-debian-11-r1
+    user: ${DATABASE_CONTAINER_USER}
+    volumes:
+      - ${PG_DATA}:/bitnami/postgresql
+      # In order for psql to use an arbitrary user above:
+      - /etc/passwd:/etc/passwd:ro
+      # In order for psql to save command history:
+      - ${PG_DATA}:/var/lib/postgresql
+    environment:
+      - POSTGRESQL_USERNAME=${PG_USER}
+      - POSTGRESQL_PASSWORD=${PG_PASS}
+      - POSTGRESQL_DATABASE=${PG_DB}
