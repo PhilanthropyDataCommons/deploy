@@ -13,8 +13,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - run: git config --global user.email "update-service-image-bot@github.com"
+    - run: git config --global user.name "Update Service Image Bot"
     - run: sed -i "s/\/service:[0-9]*-[0-9a-f]*/\/service:${{ github.event.inputs.image-tag }}/" compose.yml
     - run: git diff
     - run: git add compose.yml
     - run: git commit -m "Auto-update service image to ${{ github.event.inputs.image-tag }}"
     - run: git log --graph --decorate --all
+    - run: git push
