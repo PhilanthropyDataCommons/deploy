@@ -1,0 +1,20 @@
+name: Update service image
+
+on:
+  workflow_dispatch:
+    inputs:
+      image-tag:
+        description: 'The tag of the docker image to use'
+        required: true
+        type: string
+
+jobs:
+  update-service-image:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - run: sed -i "s/\/service:[0-9]*-[0-9a-f]*/\/service:${{ github.event.inputs.image-tag }}/" compose.yml
+    - run: git diff
+    - run: git add compose.yml
+    - run: git commit -m "Auto-update service image to ${{ github.event.inputs.image-tag }}"
+    - run: git log --graph --decorate --all
