@@ -7,6 +7,12 @@ on:
         description: 'The tag of the docker image to use'
         required: true
         type: string
+  repository_dispatch:
+    inputs:
+      image-tag:
+        description: 'The tag of the docker image to use'
+        required: true
+        type: string
 
 jobs:
   update-service-image:
