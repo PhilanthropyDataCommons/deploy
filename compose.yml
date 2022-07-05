@@ -9,7 +9,7 @@ services:
     volumes:
       - ${NGINX_CONF}:/opt/bitnami/nginx/conf/server_blocks/vhost.conf:ro
   web:
-    image: ghcr.io/philanthropydatacommons/service:manualtest6
+    image: ghcr.io/philanthropydatacommons/service:20220705-71e5f91
     user: ${WEB_CONTAINER_USER}
   database:
     image: bitnami/postgresql:14.4.0-debian-11-r4
