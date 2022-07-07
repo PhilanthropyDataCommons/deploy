@@ -21,3 +21,10 @@ jobs:
     - run: git commit -m "Auto-update service image to ${{ github.event.inputs.image-tag }}"
     - run: git log --graph --decorate --all
     - run: git push
+    # Note the following VERSION is of this repo, of the compose.yml,
+    # which is distinct from the service image version from the service
+    # repo passed in above. Multiple components exist in the compose
+    # file and also configuration so it has a separate version.
+    - run: echo VERSION=$(git log -1 --date=unix --pretty=format:"%cd" | date --utc +%Y%m%d)-$(git log -1 --pretty=format:"%h") >> $GITHUB_ENV
+    - run: git tag ${{ env.VERSION }}
+    - run: git push origin ${{ env.VERSION }}
