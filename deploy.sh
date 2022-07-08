@@ -38,7 +38,7 @@ test ! -z "$REPOSITORY_PREFIX" || exit 3
 test ! -z "$REPOSITORY_FILE" || exit 4
 
 # The tag file is expected to contain a tag to release on line 1.
-TAG_FILE=./tag_file
+TAG_FILE="${TAG_FILE:-./tag_file}"
 
 # The file at $COMPOSE_NAME_FILE contains the name of the running
 # compose file. This is not expected to be present on first run.
