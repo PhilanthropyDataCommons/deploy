@@ -1,23 +1,22 @@
 name: Send tag to machine
 
 on:
-  create:
-    ref-type:
-      tag:
-        - '[0-9a-z_-]*'
+  push:
+    tags:
+    - '*'
 
 jobs:
   send-tag-to-machine:
     runs-on: ubuntu-latest
     environment: test
     steps:
-    - run: echo ${{ github.ref }} > tag_to_deploy
+    - run: echo ${{ github.ref_name }} > tag_to_deploy
     - run: cat tag_to_deploy
     - run: ls -la tag_to_deploy
     - run: chmod 660 tag_to_deploy
     - run: touch ssh_id
     - run: chmod 700 ssh_id
-    - run: echo ${{ secrets.BUILD_SSH_PRIVATE_KEY }} > ssh_id
+    - run: echo "${{ secrets.BUILD_SSH_PRIVATE_KEY }}" > ssh_id
     - run: ls -la ssh_id
     - run: sha256sum ssh_id
-    - run: scp -i ssh_id tag_to_deploy build@{{ secrets.MACHINE_ADDRESS }}:/home/build/tag_to_deploy
+    - run: scp -i ssh_id tag_to_deploy build@${{ secrets.MACHINE_ADDRESS }}:/home/build/tag_to_deploy
