@@ -19,7 +19,7 @@ jobs:
     - run: echo "${{ secrets.BUILD_SSH_PRIVATE_KEY }}" > ssh_id
     - run: ls -la ssh_id
     - run: sha256sum ssh_id
-    - run: mkdir -p ~/.ssh
-    - run: chmod 700 ~/.ssh
-    - run: echo "${{ secrets.KNOWN_HOSTS }}" >> ~/.ssh/known_hosts
-    - run: scp -i ssh_id tag_to_deploy build@${{ secrets.MACHINE_ADDRESS }}:/home/build/tag_to_deploy
+    - run: touch ~/my_known_hosts
+    - run: chmod 700 ~/my_known_hosts
+    - run: echo "${{ secrets.KNOWN_HOSTS }}" > ~/my_known_hosts
+    - run: scp -i ssh_id tag_to_deploy -o UserKnownHostsFile=~/my_known_hosts build@${{ secrets.MACHINE_ADDRESS }}:/home/build/tag_to_deploy
