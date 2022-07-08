@@ -8,6 +8,8 @@ services:
       - "443:8443"
     volumes:
       - ${NGINX_CONF}:/opt/bitnami/nginx/conf/server_blocks/vhost.conf:ro
+      - ${NGINX_CERT}:/opt/bitnami/nginx/conf/server.crt:ro
+      - ${NGINX_KEY}:/opt/bitnami/nginx/conf/server.key:ro
   web:
     image: ghcr.io/philanthropydatacommons/service:20220708-62920b0
     user: ${WEB_CONTAINER_USER}
