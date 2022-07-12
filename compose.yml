@@ -11,7 +11,7 @@ services:
       - ${NGINX_CERT}:/opt/bitnami/nginx/conf/server.crt:ro
       - ${NGINX_KEY}:/opt/bitnami/nginx/conf/server.key:ro
   web:
-    image: ghcr.io/philanthropydatacommons/service:20220712-ee0be60
+    image: ghcr.io/philanthropydatacommons/service:20220712-9750942
     user: ${WEB_CONTAINER_USER}
   database:
     image: bitnami/postgresql:14.4.0-debian-11-r4
