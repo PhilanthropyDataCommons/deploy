@@ -1,7 +1,7 @@
 version: "2.4"
 services:
   reverse-proxy:
-    image: bitnami/nginx:1.22.0-debian-11-r11
+    image: bitnami/nginx:1.22.0-debian-11-r16
     user: ${REVERSE_PROXY_CONTAINER_USER}
     ports:
       - "80:8080"
@@ -13,8 +13,16 @@ services:
   web:
     image: ghcr.io/philanthropydatacommons/service:20220713-11ecdfd
     user: ${WEB_CONTAINER_USER}
+    environment:
+      - HOST=0.0.0.0
+      - PORT=3000
+      - PGHOST=database
+      - PGUSER=${PG_USER}
+      - PGPASSWORD=${PG_PASS}
+      - PGDATABASE=${PG_DB}
+      - PGPORT=${PG_PORT}
   database:
-    image: bitnami/postgresql:14.4.0-debian-11-r4
+    image: bitnami/postgresql:14.4.0-debian-11-r9
     user: ${DATABASE_CONTAINER_USER}
     volumes:
       - ${PG_DATA}:/bitnami/postgresql
@@ -26,3 +34,4 @@ services:
       - POSTGRESQL_USERNAME=${PG_USER}
       - POSTGRESQL_PASSWORD=${PG_PASS}
       - POSTGRESQL_DATABASE=${PG_DB}
+      - POSTGRESQL_PORT_NUMBER=${PG_PORT}
