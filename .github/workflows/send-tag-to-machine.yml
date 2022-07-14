@@ -15,6 +15,7 @@ jobs:
     - run: touch ~/ssh_id
     - run: chmod 700 ~/ssh_id
     - run: echo "${{ secrets.BUILD_SSH_PRIVATE_KEY }}" > ~/ssh_id
+    - run: echo "${{ secrets.BUILD_SSH_PUBLIC_KEY }}" > ~/ssh_id.pub
     - run: touch ~/my_known_hosts
     - run: chmod 700 ~/my_known_hosts
     - run: echo "${{ secrets.KNOWN_HOSTS }}" > ~/my_known_hosts
