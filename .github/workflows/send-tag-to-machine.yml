@@ -22,4 +22,4 @@ jobs:
     - run: touch ~/my_known_hosts
     - run: chmod 700 ~/my_known_hosts
     - run: echo "${{ secrets.KNOWN_HOSTS }}" > ~/my_known_hosts
-    - run: scp -i ssh_id -o UserKnownHostsFile=~/my_known_hosts tag_to_deploy build@${{ secrets.MACHINE_ADDRESS }}:/home/build/tag_to_deploy
+    - run: scp -i ssh_id -o UserKnownHostsFile=~/my_known_hosts -p tag_to_deploy build@${{ secrets.MACHINE_ADDRESS }}:/home/build/tag_to_deploy
