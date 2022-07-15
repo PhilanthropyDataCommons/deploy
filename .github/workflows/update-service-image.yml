@@ -11,8 +11,11 @@ on:
 jobs:
   update-service-image:
     runs-on: ubuntu-latest
+    environment: build
     steps:
     - uses: actions/checkout@v2
+      with:
+        ssh-key: "${{ secrets.SSH_PUSH_DEPLOY_PRIVATE_KEY }}"
     - run: git config --global user.email "update-service-image-bot@github.com"
     - run: git config --global user.name "Update Service Image Bot"
     - run: sed -i "s/ghcr\.io\/philanthropydatacommons\/service:[0-9a-z_-]*/ghcr\.io\/philanthropydatacommons\/service:${{ github.event.inputs.image-tag }}/" compose.yml
