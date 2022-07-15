@@ -1,0 +1,17 @@
+server {
+    listen 0.0.0.0:8443 ssl;
+    server_name # You will want more server names here.
+                reverse-proxy # This is the within-docker name.
+                localhost 127.0.0.1;
+    ssl_certificate /opt/bitnami/nginx/conf/server.crt;
+    ssl_certificate_key /opt/bitnami/nginx/conf/server.key;
+
+    location / {
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header HOST $http_host;
+        proxy_set_header X-NginX-Proxy true;
+
+        proxy_pass http://web:3000;
+        proxy_redirect off;
+    }
+}

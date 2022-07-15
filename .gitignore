@@ -1,0 +1,4 @@
+.env
+compose_current_file_name
+proxy.conf
+tag_to_deploy
