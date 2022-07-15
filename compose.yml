@@ -11,7 +11,7 @@ services:
       - ${NGINX_CERT}:/opt/bitnami/nginx/conf/server.crt:ro
       - ${NGINX_KEY}:/opt/bitnami/nginx/conf/server.key:ro
   web:
-    image: ghcr.io/philanthropydatacommons/service:20220713-11ecdfd
+    image: ghcr.io/philanthropydatacommons/service:20220715-57290a8
     user: ${WEB_CONTAINER_USER}
     environment:
       - HOST=0.0.0.0
