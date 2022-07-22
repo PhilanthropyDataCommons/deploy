@@ -21,6 +21,9 @@ services:
       - PGPASSWORD=${PG_PASS}
       - PGDATABASE=${PG_DB}
       - PGPORT=${PG_PORT}
+    depends_on:
+      database:
+        condition: service_healthy
   database:
     image: bitnami/postgresql:14.4.0-debian-11-r9
     user: ${DATABASE_CONTAINER_USER}
@@ -38,3 +41,8 @@ services:
       - POSTGRESQL_DATABASE=${PG_DB}
       - POSTGRESQL_PORT_NUMBER=${PG_PORT}
       - POSTGRESQL_POSTGRES_PASSWORD=${PG_POSTGRES_PASS}
+    healthcheck:
+      test: ["CMD", "pg_isready", "-q",
+             "-d", "${PG_DB}",
+             "-U", "${PG_USER}",
+             "-p", "${PG_PORT}"]
