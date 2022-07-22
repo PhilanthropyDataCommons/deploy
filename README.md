@@ -48,6 +48,12 @@ See examples of:
 
 To use either of these, copy them to the same name without `.example`.
 
+Make sure there is a `conf/conf.d` directory under the database directory:
+
+    mkdir -p /path/to/PG_DATA/conf/conf.d
+
+This directory can contain additional postgresql settings in `*.conf` files.
+
 ## Other considerations
 
 Because the `docker` commands (with vanilla Docker) essentially grant root
