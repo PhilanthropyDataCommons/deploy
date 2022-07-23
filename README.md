@@ -1,5 +1,9 @@
 # Deployment scripts for Philanthropy Data Commons service
 
+This project is related to
+[Philanthropy Data Commons](https://philanthropydatacommons.org) (PDC). Please
+visit https://philanthropydatacommons.org for an overview of PDC.
+
 These are tools that help deploy the PDC. They are separate from the PDC
 component repositories because they operate above a source-code level, are
 optional, and they can work with multiple PDC services above any given PDC
