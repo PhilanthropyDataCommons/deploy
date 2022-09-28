@@ -10,6 +10,11 @@ services:
       - ${NGINX_CONF}:/opt/bitnami/nginx/conf/server_blocks/vhost.conf:ro
       - ${NGINX_CERT}:/opt/bitnami/nginx/conf/server.crt:ro
       - ${NGINX_KEY}:/opt/bitnami/nginx/conf/server.key:ro
+    depends_on:
+      web:
+        condition: service_healthy
+      database:
+        condition: service_healthy
   web:
     image: ghcr.io/philanthropydatacommons/service:20220927-4c06413
     user: ${WEB_CONTAINER_USER}
@@ -21,6 +26,8 @@ services:
       - PGPASSWORD=${PG_PASS}
       - PGDATABASE=${PG_DB}
       - PGPORT=${PG_PORT}
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://web:3000"]
     depends_on:
       database:
         condition: service_healthy
