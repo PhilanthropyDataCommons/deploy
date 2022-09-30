@@ -71,3 +71,27 @@ user able to run the docker commands.
 
 Use the usual `docker ps` command to see which containers are running and the
 `docker logs {container_id}` to see logs for a given container.
+
+## TLS configuration with letsencrypt client
+
+Given the included configuration examples, one can run the letsencrypt client
+in standalone mode and then copy the certificates to the configured key and
+certificate locations.
+
+For example, to create and save the letsencrypt state in the reverse-proxy home:
+
+    sudo docker run -ti --rm -p 80:80 \
+        -v "/home/reverse-proxy/letsencrypt:/etc/letsencrypt" \
+        -v "/home/reverse-proxy/letsencrypt:/var/lib/letsencrypt" \
+        certbot/certbot:v1.30.0 certonly
+
+And then to copy the key and certificate:
+
+    sudo cp /home/reverse-proxy/letsencrypt/live/domain.name/fullchain.pem \
+        /home/reverse-proxy/cert.pem
+    sudo cp /home/reverse-proxy/letsencrypt/live/domain.name/key.pem \
+        /home/reverse-proxy/key.pem
+
+Reload or restart the reverse proxy container to use the certificate:
+
+    sudo docker restart deploy_reverse-proxy_1
