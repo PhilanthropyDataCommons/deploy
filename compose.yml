@@ -16,7 +16,7 @@ services:
       database:
         condition: service_healthy
   web:
-    image: ghcr.io/philanthropydatacommons/service:20221017-5fe4257
+    image: ghcr.io/philanthropydatacommons/service:20221017-6ce3957
     user: ${WEB_CONTAINER_USER}
     environment:
       - HOST=0.0.0.0
