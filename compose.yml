@@ -26,6 +26,7 @@ services:
       - PGPASSWORD=${PG_PASS}
       - PGDATABASE=${PG_DB}
       - PGPORT=${PG_PORT}
+      - API_KEYS_FILE=${API_KEYS_FILE}
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://web:3000"]
     depends_on:
