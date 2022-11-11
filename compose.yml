@@ -18,6 +18,8 @@ services:
   web:
     image: ghcr.io/philanthropydatacommons/service:20221111-992a36f
     user: ${WEB_CONTAINER_USER}
+    volumes:
+      - ${API_KEYS_FILE}:${API_KEYS_FILE}:ro
     environment:
       - HOST=0.0.0.0
       - PORT=3000
