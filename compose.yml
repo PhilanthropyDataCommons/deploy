@@ -31,6 +31,7 @@ services:
       - API_KEYS_FILE=${API_KEYS_FILE}
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://web:3000"]
+      interval: 10s
     depends_on:
       database:
         condition: service_healthy
@@ -56,3 +57,4 @@ services:
              "-d", "${PG_DB}",
              "-U", "${PG_USER}",
              "-p", "${PG_PORT}"]
+      interval: 10s
