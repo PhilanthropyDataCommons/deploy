@@ -16,7 +16,7 @@ services:
       database:
         condition: service_healthy
   web:
-    image: ghcr.io/philanthropydatacommons/service:20221117-ba23fa3
+    image: ghcr.io/philanthropydatacommons/service:20221129-6e087a9
     user: ${WEB_CONTAINER_USER}
     volumes:
       - ${API_KEYS_FILE}:${API_KEYS_FILE}:ro
