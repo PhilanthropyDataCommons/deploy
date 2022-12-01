@@ -15,6 +15,8 @@ services:
         condition: service_healthy
       database:
         condition: service_healthy
+    logging:
+      driver: journald
   web:
     image: ghcr.io/philanthropydatacommons/service:20221130-13f4271
     user: ${WEB_CONTAINER_USER}
@@ -35,6 +37,8 @@ services:
     depends_on:
       database:
         condition: service_healthy
+    logging:
+      driver: journald
   database:
     image: bitnami/postgresql:14.5.0-debian-11-r40
     user: ${DATABASE_CONTAINER_USER}
@@ -58,3 +62,5 @@ services:
              "-U", "${PG_USER}",
              "-p", "${PG_PORT}"]
       interval: 10s
+    logging:
+      driver: journald
