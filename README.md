@@ -89,7 +89,7 @@ And then to copy the key and certificate:
 
     sudo cp /home/reverse-proxy/letsencrypt/live/domain.name/fullchain.pem \
         /home/reverse-proxy/cert.pem
-    sudo cp /home/reverse-proxy/letsencrypt/live/domain.name/key.pem \
+    sudo cp /home/reverse-proxy/letsencrypt/live/domain.name/privkey.pem \
         /home/reverse-proxy/key.pem
 
 Reload or restart the reverse proxy container to use the certificate:
