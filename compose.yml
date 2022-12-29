@@ -18,7 +18,7 @@ services:
     logging:
       driver: journald
   web:
-    image: ghcr.io/philanthropydatacommons/service:20221223-5778a26
+    image: ghcr.io/philanthropydatacommons/service:20221229-3cad98f
     user: ${WEB_CONTAINER_USER}
     volumes:
       - ${API_KEYS_FILE}:${API_KEYS_FILE}:ro
