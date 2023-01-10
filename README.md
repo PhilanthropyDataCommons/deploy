@@ -43,6 +43,18 @@ The `deploy.sh` gets sent to the machines manually rather than automatically.
 
 The `deploy.sh` uses environment variables from a `.env` file.
 
+## keycloakInitDb.sh
+
+The `keycloakInitDb.sh` needs to be manually copied to the location specified in
+the `KEYCLOAK_PG_INITDB_SCRIPT` environment variable. By default (see
+`.env.example`) this is `/home/deploy/keycloakInitDb.sh`. This script follows a
+pattern from bitnami images. It is used to initialize a postgres database for
+the keycloak data. Bitnami scripts run it once on startup then leave a dotfile
+named `.user_scripts_initialized` in the same directory to avoid future runs. If
+you need to re-initialize the keycloak database, delete (or move) the database
+but also delete the file (e.g. `/home/deploy/.user_scripts_initialized`) so that
+the `keycloakInitDb.sh` script will run again on startup.
+
 ## Other components
 
 See examples of:

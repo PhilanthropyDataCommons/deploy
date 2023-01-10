@@ -50,17 +50,41 @@ services:
       - ${PG_DATA}:/var/lib/postgresql
       # In order to extend/override configuration while keeping a generated one:
       - ${PG_DATA}/conf/conf.d:/bitnami/postgresql/conf/conf.d:ro
+      # In order to run a script to create keycloak database:
+      - ${KEYCLOAK_PG_INITDB_SCRIPT}:/docker-entrypoint-initdb.d/keycloak.sh
     environment:
       - POSTGRESQL_USERNAME=${PG_USER}
       - POSTGRESQL_PASSWORD=${PG_PASS}
       - POSTGRESQL_DATABASE=${PG_DB}
       - POSTGRESQL_PORT_NUMBER=${PG_PORT}
       - POSTGRESQL_POSTGRES_PASSWORD=${PG_POSTGRES_PASS}
+      - KEYCLOAK_PG_PASSWORD=${KEYCLOAK_PG_PASSWORD}
     healthcheck:
       test: ["CMD", "pg_isready", "-q",
              "-d", "${PG_DB}",
              "-U", "${PG_USER}",
              "-p", "${PG_PORT}"]
       interval: 10s
+    logging:
+      driver: journald
+  auth:
+    # Do not expose any ports here. Allow access via reverse-proxy or overlay.
+    image: bitnami/keycloak:20.0.2-debian-11-r9
+    user: ${AUTH_CONTAINER_USER}
+    environment:
+      - KEYCLOAK_DATABASE_HOST=database
+      - KEYCLOAK_DATABASE_PORT=${PG_PORT}
+      - KEYCLOAK_DATABASE_NAME=keycloak
+      - KEYCLOAK_DATABASE_USER=keycloak
+      - KEYCLOAK_DATABASE_SCHEMA=public
+      - KEYCLOAK_DATABASE_PASSWORD=${KEYCLOAK_PG_PASSWORD}
+      - KEYCLOAK_ADMIN_USER=admin
+      - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
+      - KEYCLOAK_MANAGEMENT_USER=management
+      - KEYCLOAK_MANAGEMENT_PASSWORD=${KEYCLOAK_MANAGEMENT_PASSWORD}
+      - KEYCLOAK_EXTRA_ARGS=--proxy=edge --hostname-path=/auth --http-relative-path=/auth --hostname-strict=false
+    depends_on:
+      database:
+        condition: service_healthy
     logging:
       driver: journald
