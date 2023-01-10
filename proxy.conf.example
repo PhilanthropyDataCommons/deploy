@@ -6,12 +6,36 @@ server {
     ssl_certificate /opt/bitnami/nginx/conf/server.crt;
     ssl_certificate_key /opt/bitnami/nginx/conf/server.key;
 
-    location / {
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header HOST $http_host;
-        proxy_set_header X-NginX-Proxy true;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Forwarded-Host $host;
+    proxy_set_header Host $http_host;
+    proxy_set_header X-NginX-Proxy true;
 
+    # The root path goes to the PDC API implementation, the web service.
+    location / {
         proxy_pass http://web:3000;
-        proxy_redirect off;
+    }
+
+    # The /auth paths go to the authentication and authorization service.
+    location /auth/admin/ {
+        proxy_pass http://auth:8080/auth/admin/;
+    }
+
+    location /auth/js/ {
+        proxy_pass http://auth:8080/auth/js/;
+    }
+
+    location /auth/realms/ {
+        proxy_pass http://auth:8080/auth/realms/;
+    }
+
+    location /auth/resources/ {
+        proxy_pass http://auth:8080/auth/resources/;
+    }
+
+    location /auth/robots.txt {
+        proxy_pass http://auth:8080/auth/robots.txt;
     }
 }
