@@ -1,7 +1,7 @@
 version: "2.4"
 services:
   reverse-proxy:
-    image: bitnami/nginx:1.23.3-debian-11-r10
+    image: bitnami/nginx:1.23.3-debian-11-r30
     user: ${REVERSE_PROXY_CONTAINER_USER}
     ports:
       # Purposely omit port 80 in order to run ACME clients standalone.
@@ -40,7 +40,7 @@ services:
     logging:
       driver: journald
   database:
-    image: bitnami/postgresql:14.6.0-debian-11-r20
+    image: bitnami/postgresql:14.7.0-debian-11-r5
     user: ${DATABASE_CONTAINER_USER}
     volumes:
       - ${PG_DATA}:/bitnami/postgresql
@@ -69,7 +69,7 @@ services:
       driver: journald
   auth:
     # Do not expose any ports here. Allow access via reverse-proxy or overlay.
-    image: bitnami/keycloak:20.0.2-debian-11-r9
+    image: bitnami/keycloak:20.0.5-debian-11-r3
     user: ${AUTH_CONTAINER_USER}
     environment:
       - KEYCLOAK_DATABASE_HOST=database
