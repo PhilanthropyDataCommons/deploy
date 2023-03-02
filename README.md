@@ -70,6 +70,9 @@ Make sure there is a `conf/conf.d` directory under the database directory:
 
 This directory can contain additional postgresql settings in `*.conf` files.
 
+Copy `auth_root_page.html` to `/home/reverse-proxy/` or wherever your `.env`
+expects to find it via `AUTH_ROOT_PAGE`.
+
 ## Other considerations
 
 Because the `docker` commands (with vanilla Docker) essentially grant root
@@ -95,14 +98,21 @@ For example, to create and save the letsencrypt state in the reverse-proxy home:
     sudo docker run -ti --rm -p 80:80 \
         -v "/home/reverse-proxy/letsencrypt:/etc/letsencrypt" \
         -v "/home/reverse-proxy/letsencrypt:/var/lib/letsencrypt" \
-        certbot/certbot:v1.30.0 certonly
+        certbot/certbot:v1.32.2 certonly
 
-And then to copy the key and certificate:
+Repeat the above step for both the auth service and web service domain names.
+Then copy the keys and certificates:
 
-    sudo cp /home/reverse-proxy/letsencrypt/live/domain.name/fullchain.pem \
-        /home/reverse-proxy/cert.pem
-    sudo cp /home/reverse-proxy/letsencrypt/live/domain.name/privkey.pem \
-        /home/reverse-proxy/key.pem
+    export AUTH_DOMAIN=my_domain_name_hosting_the_auth_service
+    sudo cp /home/reverse-proxy/letsencrypt/live/${AUTH_DOMAIN}/fullchain.pem \
+        /home/reverse-proxy/auth-cert.pem
+    sudo cp /home/reverse-proxy/letsencrypt/live/${AUTH_DOMAIN}/privkey.pem \
+        /home/reverse-proxy/auth-key.pem
+    export WEB_DOMAIN=my_domain_hosting_the_back-end_web_service
+    sudo cp /home/reverse-proxy/letsencrypt/live/${WEB_DOMAIN}/fullchain.pem \
+        /home/reverse-proxy/auth-cert.pem
+    sudo cp /home/reverse-proxy/letsencrypt/live/${WEB_DOMAIN}/privkey.pem \
+        /home/reverse-proxy/auth-key.pem
 
 Reload or restart the reverse proxy container to use the certificate:
 
