@@ -8,8 +8,14 @@ services:
       - "443:8443"
     volumes:
       - ${NGINX_CONF}:/opt/bitnami/nginx/conf/server_blocks/vhost.conf:ro
-      - ${NGINX_CERT}:/opt/bitnami/nginx/conf/server.crt:ro
-      - ${NGINX_KEY}:/opt/bitnami/nginx/conf/server.key:ro
+      # The web service may run on a separate subdomain from the auth service
+      - ${WEB_CERT}:/opt/bitnami/nginx/conf/web-cert.pem:ro
+      - ${WEB_KEY}:/opt/bitnami/nginx/conf/web-key.pem:ro
+      # The auth service may run on a separate subdomain from the web service
+      - ${AUTH_CERT}:/opt/bitnami/nginx/conf/auth-cert.pem:ro
+      - ${AUTH_KEY}:/opt/bitnami/nginx/conf/auth-key.pem:ro
+      # A page to show when someone visits the auth service directly
+      - ${AUTH_ROOT_PAGE}:/app/auth_root_page.html:ro
     depends_on:
       web:
         condition: service_healthy
@@ -42,6 +48,7 @@ services:
   database:
     image: bitnami/postgresql:14.7.0-debian-11-r5
     user: ${DATABASE_CONTAINER_USER}
+    # For local development it can be useful to expose `ports: 5432:${PG_PORT}`.
     volumes:
       - ${PG_DATA}:/bitnami/postgresql
       # In order for psql to use an arbitrary user above:
@@ -82,7 +89,9 @@ services:
       - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
       - KEYCLOAK_MANAGEMENT_USER=management
       - KEYCLOAK_MANAGEMENT_PASSWORD=${KEYCLOAK_MANAGEMENT_PASSWORD}
-      - KEYCLOAK_EXTRA_ARGS=--proxy=edge --hostname-path=/auth --http-relative-path=/auth --hostname-strict=false
+      # For local development it can be useful to add the following to
+      # KEYCLOAK_EXTRA_ARGS: --hostname-path=/auth --http-relative-path=/auth
+      - KEYCLOAK_EXTRA_ARGS=--proxy=edge --hostname-strict=false
     depends_on:
       database:
         condition: service_healthy
