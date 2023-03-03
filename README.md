@@ -110,9 +110,9 @@ Then copy the keys and certificates:
         /home/reverse-proxy/auth-key.pem
     export WEB_DOMAIN=my_domain_hosting_the_back-end_web_service
     sudo cp /home/reverse-proxy/letsencrypt/live/${WEB_DOMAIN}/fullchain.pem \
-        /home/reverse-proxy/auth-cert.pem
+        /home/reverse-proxy/web-cert.pem
     sudo cp /home/reverse-proxy/letsencrypt/live/${WEB_DOMAIN}/privkey.pem \
-        /home/reverse-proxy/auth-key.pem
+        /home/reverse-proxy/web-key.pem
 
 Reload or restart the reverse proxy container to use the certificate:
 
