@@ -73,6 +73,24 @@ This directory can contain additional postgresql settings in `*.conf` files.
 Copy `auth_root_page.html` to `/home/reverse-proxy/` or wherever your `.env`
 expects to find it via `AUTH_ROOT_PAGE`.
 
+## SMS messages for two-factor authentication
+
+Build a Twilio SMS Keycloak provider jar from `./twilio-keycloak-provider` in:
+https://github.com/PhilanthropyDataCommons/auth
+Set `KEYCLOAK_CUSTOM_SMS_PROVIDER_JAR` in `.env` to the path of this jar file.
+
+Build dasniko's keycloak requiredaction jar from `./requiredaction` in:
+https://github.com/dasniko/keycloak-extensions-demo
+Set `KEYCLOAK_CUSTOM_SMS_PROVIDER_DEPENDENCY_JAR` in `.env` to the path of this
+jar file.
+
+More details can be found in the [auth/twilio-keycloak-provider README](
+https://github.com/PhilanthropyDataCommons/auth/tree/main/twilio-keycloak-provider
+).
+
+Because neither of these jars is published to a central repository, a precompiled
+version of each is included in the lib directory in this repository.
+
 ## Other considerations
 
 Because the `docker` commands (with vanilla Docker) essentially grant root

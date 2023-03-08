@@ -78,6 +78,10 @@ services:
     # Do not expose any ports here. Expect access via reverse-proxy exclusively.
     image: bitnami/keycloak:20.0.5-debian-11-r3
     user: ${AUTH_CONTAINER_USER}
+    volumes:
+      # In order to run our SMS MFA/2FA authentication provider, use two jars:
+      - ${KEYCLOAK_CUSTOM_SMS_PROVIDER_JAR}:/opt/bitnami/keycloak/providers/custom-sms-provider.jar
+      - ${KEYCLOAK_CUSTOM_SMS_PROVIDER_DEPENDENCY_JAR}:/opt/bitnami/keycloak/providers/custom-sms-provider-dependency.jar
     environment:
       - KEYCLOAK_DATABASE_HOST=database
       - KEYCLOAK_DATABASE_PORT=${PG_PORT}
@@ -96,6 +100,9 @@ services:
       - KEYCLOAK_PROXY=edge
       - KEYCLOAK_HOSTNAME_URL=https://${AUTH_SERVER_HOSTNAME}/
       - KEYCLOAK_HOSTNAME_ADMIN_URL=https://${AUTH_SERVER_HOSTNAME}/admin/
+      - TWILIO_PHONE_NUMBER=${TWILIO_PHONE_NUMBER}
+      - TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID}
+      - TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN}
     depends_on:
       database:
         condition: service_healthy
