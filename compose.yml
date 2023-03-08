@@ -75,7 +75,7 @@ services:
     logging:
       driver: journald
   auth:
-    # Do not expose any ports here. Allow access via reverse-proxy or overlay.
+    # Do not expose any ports here. Expect access via reverse-proxy exclusively.
     image: bitnami/keycloak:20.0.5-debian-11-r3
     user: ${AUTH_CONTAINER_USER}
     environment:
@@ -85,13 +85,17 @@ services:
       - KEYCLOAK_DATABASE_USER=keycloak
       - KEYCLOAK_DATABASE_SCHEMA=public
       - KEYCLOAK_DATABASE_PASSWORD=${KEYCLOAK_PG_PASSWORD}
-      - KEYCLOAK_ADMIN_USER=admin
-      - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
-      - KEYCLOAK_MANAGEMENT_USER=management
-      - KEYCLOAK_MANAGEMENT_PASSWORD=${KEYCLOAK_MANAGEMENT_PASSWORD}
-      # For local development it can be useful to add the following to
-      # KEYCLOAK_EXTRA_ARGS: --hostname-path=/auth --http-relative-path=/auth
-      - KEYCLOAK_EXTRA_ARGS=--proxy=edge --hostname-strict=false
+      - KEYCLOAK_CREATE_ADMIN_USER=false
+      # If this is the first run, set the above to true and uncomment these 4:
+      #- KEYCLOAK_ADMIN_USER=admin
+      #- KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
+      #- KEYCLOAK_MANAGEMENT_USER=management
+      #- KEYCLOAK_MANAGEMENT_PASSWORD=${KEYCLOAK_MANAGEMENT_PASSWORD}
+      - KEYCLOAK_PRODUCTION=true
+      - KEYCLOAK_ENABLE_HTTP=true
+      - KEYCLOAK_PROXY=edge
+      - KEYCLOAK_HOSTNAME_URL=https://${AUTH_SERVER_HOSTNAME}/
+      - KEYCLOAK_HOSTNAME_ADMIN_URL=https://${AUTH_SERVER_HOSTNAME}/admin/
     depends_on:
       database:
         condition: service_healthy
