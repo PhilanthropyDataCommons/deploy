@@ -26,8 +26,6 @@ services:
   web:
     image: ghcr.io/philanthropydatacommons/service:20230321-bb25a75
     user: ${WEB_CONTAINER_USER}
-    volumes:
-      - ${API_KEYS_FILE}:${API_KEYS_FILE}:ro
     environment:
       - HOST=0.0.0.0
       - PORT=3000
@@ -36,7 +34,8 @@ services:
       - PGPASSWORD=${PG_PASS}
       - PGDATABASE=${PG_DB}
       - PGPORT=${PG_PORT}
-      - API_KEYS_FILE=${API_KEYS_FILE}
+      - AUTH_SERVER_ISSUER=${AUTH_SERVER_ISSUER}
+      - OPENAPI_DOCS_AUTH_CLIENT_ID=${OPENAPI_DOCS_AUTH_CLIENT_ID}
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://web:3000"]
       interval: 10s
