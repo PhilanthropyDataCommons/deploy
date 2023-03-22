@@ -3,6 +3,8 @@ services:
   reverse-proxy:
     image: bitnami/nginx:1.23.3-debian-11-r30
     user: ${REVERSE_PROXY_CONTAINER_USER}
+    group_add:
+      - ${REVERSE_PROXY_CONTAINER_GROUP}
     ports:
       # Purposely omit port 80 in order to run ACME clients standalone.
       - "443:8443"
@@ -16,6 +18,8 @@ services:
       - ${AUTH_KEY}:/opt/bitnami/nginx/conf/auth-key.pem:ro
       # A page to show when someone visits the auth service directly
       - ${AUTH_ROOT_PAGE}:/app/auth_root_page.html:ro
+      # When using letsencrypt, symlinks may go up a directory, mount whole dir
+      - /etc/letsencrypt:/etc/letsencrypt:ro
     depends_on:
       web:
         condition: service_healthy
