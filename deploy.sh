@@ -87,7 +87,7 @@ if [[ ! -f $TAG_FILE ]]; then
 fi
 
 
-VERSION=$(head -n 1 $TAG_FILE)
+VERSION=$(head -n 1 $TAG_FILE | egrep '^[a-zA-Z0-9\_\.\-]+$')
 test ! -z "$VERSION" || fin 6
 
 # In the filename, replace slashes with underscores. This way, we can
