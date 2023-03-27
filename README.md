@@ -103,9 +103,11 @@ user able to run the docker commands.
 ## Logs
 
 Use the usual `docker ps` command to see which containers are running and the
-`docker logs {container_id}` to see logs for a given container.
+`docker logs {container_id}` to see logs for a given container. Also, logs may
+be found via `journalctl` with the `CONTAINER_NAME` as a filter, for example:
+`journalctl CONTAINER_NAME=deploy_database_1 --no-pager --utc`.
 
-## TLS configuration with letsencrypt client
+## TLS configuration with letsencrypt client using docker
 
 Given the included configuration examples, one can run the letsencrypt client
 in standalone mode and then copy the certificates to the configured key and
@@ -135,3 +137,11 @@ Then copy the keys and certificates:
 Reload or restart the reverse proxy container to use the certificate:
 
     sudo docker restart deploy_reverse-proxy_1
+
+## TLS configuration with letsencrypt client on host
+
+A preferred alternative to the above setup is to run letsencrypt on the host.
+An example script can be found at `renewCerts.sh`. In this case, one points
+the `WEB_CERT`, `WEB_KEY`, `AUTH_CERT`, and `AUTH_KEY` directly to the
+`/etc/letsencrypt` paths. The compose script already expects `/etc/letsencrypt`
+so it is a good idea to run letsencrypt manually before launch.

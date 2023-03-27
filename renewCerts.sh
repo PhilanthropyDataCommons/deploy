@@ -3,7 +3,7 @@
 # A script to renew certificates with certbot and send chat message with result
 
 # Example usage, expected within crontab:
-# 0 18 * * SUN /home/deploy/renewCerts.sh
+# 0 18 * * SUN /root/renewCerts.sh
 
 # Requirements:
 # certbot (installed on the host, not in a container),
