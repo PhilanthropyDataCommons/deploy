@@ -85,6 +85,8 @@ services:
       # In order to run our SMS MFA/2FA authentication provider, use two jars:
       - ${KEYCLOAK_CUSTOM_SMS_PROVIDER_JAR}:/opt/bitnami/keycloak/providers/custom-sms-provider.jar
       - ${KEYCLOAK_CUSTOM_SMS_PROVIDER_DEPENDENCY_JAR}:/opt/bitnami/keycloak/providers/custom-sms-provider-dependency.jar
+      # To make the login screens have a PDC look and feel, use a custom theme:
+      - ${KEYCLOAK_CUSTOM_THEME_JAR}:/opt/bitnami/keycloak/providers/custom-theme.jar
     environment:
       - KEYCLOAK_DATABASE_HOST=database
       - KEYCLOAK_DATABASE_PORT=${PG_PORT}
