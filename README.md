@@ -91,6 +91,12 @@ https://github.com/PhilanthropyDataCommons/auth/tree/main/twilio-keycloak-provid
 Because neither of these jars is published to a central repository, a precompiled
 version of each is included in the lib directory in this repository.
 
+## Custom theme for login
+
+Build a PDC Keycloak theme jar from `./pdc-keycloak-theme` in:
+https://github.com/PhilanthropyDataCommons/auth
+Set `KEYCLOAK_CUSTOM_THEME_JAR` in `.env` to the path of this jar file.
+
 ## Other considerations
 
 Because the `docker` commands (with vanilla Docker) essentially grant root
