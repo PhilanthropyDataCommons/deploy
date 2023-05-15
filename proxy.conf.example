@@ -6,6 +6,10 @@ server {
     # Volumes mounted in the compose.yml
     ssl_certificate /opt/bitnami/nginx/conf/web-cert.pem;
     ssl_certificate_key /opt/bitnami/nginx/conf/web-key.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers 'DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:TLS_AES_128_GCM_SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-CHACHA20-POLY1305:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256';
+    add_header Strict-Transport-Security "max-age=31536000" always;
 
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header X-Real-IP $remote_addr;
@@ -26,6 +30,10 @@ server {
     # Volumes mounted in the compose.yml
     ssl_certificate /opt/bitnami/nginx/conf/auth-cert.pem;
     ssl_certificate_key /opt/bitnami/nginx/conf/auth-key.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers 'DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:TLS_AES_128_GCM_SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-CHACHA20-POLY1305:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256';
+    add_header Strict-Transport-Security "max-age=31536000" always;
 
     # Keycloak can set large cookies and headers
     proxy_buffer_size 16k;
