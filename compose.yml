@@ -49,7 +49,7 @@ services:
     logging:
       driver: journald
   database:
-    image: bitnami/postgresql:14.7.0-debian-11-r5
+    image: bitnami/postgresql:14.8.0-debian-11-r12
     user: ${DATABASE_CONTAINER_USER}
     # For local development it can be useful to expose `ports: 5432:${PG_PORT}`.
     volumes:
