@@ -1,0 +1,6 @@
+# This is the crontab of the `deploy` user. It runs the `deploy.sh` script.
+
+# Every minute run the deployment script and print to an hourly file.
+* * * * * /bin/bash ~/deploy.sh >> ~/deploy_$(date +\%Y-\%m-\%dT\%H --utc).log 2>&1
+# Every day at T06Z remove 90+ day-old deployment logs.
+0 6 * * * find ~ -maxdepth 1 -type f -name "deploy_*.log" -mtime +90 -delete

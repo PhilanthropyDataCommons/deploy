@@ -9,6 +9,10 @@ component repositories because they operate above a source-code level, are
 optional, and they can work with multiple PDC services above any given PDC
 service's level.
 
+This README describes components of a deployment pipeline. For specific steps to
+deploy or upgrade using the existing production deployment pipeline, see
+[DEPLOYING](./DEPLOYING.md) and [UPGRADING](./UPGRADING.md).
+
 ## compose.yml
 
 The `compose.yml` is the thing to be deployed. It contains declarations or
