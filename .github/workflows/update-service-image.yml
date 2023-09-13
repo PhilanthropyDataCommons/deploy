@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: build
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         ssh-key: "${{ secrets.SSH_PUSH_DEPLOY_PRIVATE_KEY }}"
     - run: git config --global user.email "update-service-image-bot@github.com"
