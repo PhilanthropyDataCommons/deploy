@@ -64,8 +64,13 @@ chgrp -R $REVERSE_PROXY_CONTAINER_GROUP /etc/letsencrypt/{live,archive} \
     || fin "Failed to chgrp /etc/letsencrypt/{live,archive} to $REVERSE_PROXY_CONTAINER_GROUP"
 chmod -R g+rx /etc/letsencrypt/{live,archive} \
     || fin "Failed to add group read and execute permissions to /etc/letsencrypt/{live,archive}"
-docker exec deploy_reverse-proxy_1 nginx -s reload \
-    || fin "Failed to send reload signal to reverse proxy running in a container"
+# For unknown reasons, sending the reload signal to the nginx process inside the
+# container fails to have nginx pick up new certificates. Instead, do a full
+# container restart. See issue
+# https://github.com/PhilanthropyDataCommons/deploy/issues/90. This can likely
+# break active connections but shouldn't lose sessions.
+docker restart deploy_reverse-proxy_1 \
+    || fin "Failed to restart to reverse proxy container"
 (( $(docker ps | grep reverse-proxy | wc -l) == "1" )) \
     || fin "The reverse-proxy container is no longer running"
 
