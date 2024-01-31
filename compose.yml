@@ -13,11 +13,6 @@ services:
       # The web service may run on a separate subdomain from the auth service
       - ${WEB_CERT}:/opt/bitnami/nginx/conf/web-cert.pem:ro
       - ${WEB_KEY}:/opt/bitnami/nginx/conf/web-key.pem:ro
-      # The auth service may run on a separate subdomain from the web service
-      - ${AUTH_CERT}:/opt/bitnami/nginx/conf/auth-cert.pem:ro
-      - ${AUTH_KEY}:/opt/bitnami/nginx/conf/auth-key.pem:ro
-      # A page to show when someone visits the auth service directly
-      - ${AUTH_ROOT_PAGE}:/app/auth_root_page.html:ro
       # When using letsencrypt, symlinks may go up a directory, mount whole dir
       - /etc/letsencrypt:/etc/letsencrypt:ro
     depends_on:
@@ -66,56 +61,17 @@ services:
       - ${PG_DATA}:/var/lib/postgresql
       # In order to extend/override configuration while keeping a generated one:
       - ${PG_DATA}/conf/conf.d:/bitnami/postgresql/conf/conf.d:ro
-      # In order to run a script to create keycloak database:
-      - ${KEYCLOAK_PG_INITDB_SCRIPT}:/docker-entrypoint-initdb.d/keycloak.sh
     environment:
       - POSTGRESQL_USERNAME=${PG_USER}
       - POSTGRESQL_PASSWORD=${PG_PASS}
       - POSTGRESQL_DATABASE=${PG_DB}
       - POSTGRESQL_PORT_NUMBER=${PG_PORT}
       - POSTGRESQL_POSTGRES_PASSWORD=${PG_POSTGRES_PASS}
-      - KEYCLOAK_PG_PASSWORD=${KEYCLOAK_PG_PASSWORD}
     healthcheck:
       test: ["CMD", "pg_isready", "-q",
              "-d", "${PG_DB}",
              "-U", "${PG_USER}",
              "-p", "${PG_PORT}"]
       interval: 10s
-    logging:
-      driver: journald
-  auth:
-    # Do not expose any ports here. Expect access via reverse-proxy exclusively.
-    image: bitnami/keycloak:20.0.5-debian-11-r3
-    user: ${AUTH_CONTAINER_USER}
-    volumes:
-      # In order to run our SMS MFA/2FA authentication provider, use two jars:
-      - ${KEYCLOAK_CUSTOM_SMS_PROVIDER_JAR}:/opt/bitnami/keycloak/providers/custom-sms-provider.jar
-      - ${KEYCLOAK_CUSTOM_SMS_PROVIDER_DEPENDENCY_JAR}:/opt/bitnami/keycloak/providers/custom-sms-provider-dependency.jar
-      # To make the login screens have a PDC look and feel, use a custom theme:
-      - ${KEYCLOAK_CUSTOM_THEME_JAR}:/opt/bitnami/keycloak/providers/custom-theme.jar
-    environment:
-      - KEYCLOAK_DATABASE_HOST=database
-      - KEYCLOAK_DATABASE_PORT=${PG_PORT}
-      - KEYCLOAK_DATABASE_NAME=keycloak
-      - KEYCLOAK_DATABASE_USER=keycloak
-      - KEYCLOAK_DATABASE_SCHEMA=public
-      - KEYCLOAK_DATABASE_PASSWORD=${KEYCLOAK_PG_PASSWORD}
-      - KEYCLOAK_CREATE_ADMIN_USER=false
-      # If this is the first run, set the above to true and uncomment these 4:
-      #- KEYCLOAK_ADMIN_USER=admin
-      #- KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
-      #- KEYCLOAK_MANAGEMENT_USER=management
-      #- KEYCLOAK_MANAGEMENT_PASSWORD=${KEYCLOAK_MANAGEMENT_PASSWORD}
-      - KEYCLOAK_PRODUCTION=true
-      - KEYCLOAK_ENABLE_HTTP=true
-      - KEYCLOAK_PROXY=edge
-      - KEYCLOAK_HOSTNAME_URL=https://${AUTH_SERVER_HOSTNAME}/
-      - KEYCLOAK_HOSTNAME_ADMIN_URL=https://${AUTH_SERVER_HOSTNAME}/admin/
-      - TWILIO_PHONE_NUMBER=${TWILIO_PHONE_NUMBER}
-      - TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID}
-      - TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN}
-    depends_on:
-      database:
-        condition: service_healthy
     logging:
       driver: journald

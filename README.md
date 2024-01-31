@@ -49,21 +49,24 @@ The `deploy.sh` uses environment variables from a `.env` file.
 
 ## keycloakInitDb.sh
 
-The `keycloakInitDb.sh` needs to be manually copied to the location specified in
-the `KEYCLOAK_PG_INITDB_SCRIPT` environment variable. By default (see
-`.env.example`) this is `/home/deploy/keycloakInitDb.sh`. This script follows a
-pattern from bitnami images. It is used to initialize a postgres database for
-the keycloak data. Bitnami scripts run it once on startup then leave a dotfile
+The `keycloakInitDb.sh` can be used to initialize a postgres database for the
+keycloak data. Bitnami scripts run it once on startup then leave a dotfile
 named `.user_scripts_initialized` in the same directory to avoid future runs. If
+you are using bitnami images locally (no longer shown in the `compose.yml` here)
 you need to re-initialize the keycloak database, delete (or move) the database
 but also delete the file (e.g. `/home/deploy/.user_scripts_initialized`) so that
 the `keycloakInitDb.sh` script will run again on startup.
+
+We used to run Keycloak here using Docker Compose but now it is on its own host.
+See the version history for how to set it up in Docker Compose or use the docs
+for Keycloak to set up a local Keycloak instance.
 
 ## Other components
 
 See examples of:
 
  * An nginx configuration in `proxy.conf.example`
+ * A Keycloak-specific nginx configuration in `keycloak_proxy.conf.example`
  * Environment variables in `.env.example`
 
 To use either of these, copy them to the same name without `.example`.
@@ -74,19 +77,18 @@ Make sure there is a `conf/conf.d` directory under the database directory:
 
 This directory can contain additional postgresql settings in `*.conf` files.
 
-Copy `auth_root_page.html` to `/home/reverse-proxy/` or wherever your `.env`
-expects to find it via `AUTH_ROOT_PAGE`.
+Copy `auth_root_page.html` to `/home/reverse-proxy/` or wherever your Keycloak's
+nginx instance expects to find it.
 
 ## SMS messages for two-factor authentication
 
 Build a Twilio SMS Keycloak provider jar from `./twilio-keycloak-provider` in:
 https://github.com/PhilanthropyDataCommons/auth
-Set `KEYCLOAK_CUSTOM_SMS_PROVIDER_JAR` in `.env` to the path of this jar file.
+Add to the providers directory in Keycloak.
 
-Build dasniko's keycloak requiredaction jar from `./requiredaction` in:
-https://github.com/dasniko/keycloak-extensions-demo
-Set `KEYCLOAK_CUSTOM_SMS_PROVIDER_DEPENDENCY_JAR` in `.env` to the path of this
-jar file.
+Build the keycloak requiredaction jar from `./requiredaction` in:
+https://github.com/PhilanthropyDataCommons/auth/tree/main/keycloak-required-action
+Add to the providers directory in Keycloak.
 
 More details can be found in the [auth/twilio-keycloak-provider README](
 https://github.com/PhilanthropyDataCommons/auth/tree/main/twilio-keycloak-provider
@@ -99,7 +101,7 @@ version of each is included in the lib directory in this repository.
 
 Build a PDC Keycloak theme jar from `./pdc-keycloak-theme` in:
 https://github.com/PhilanthropyDataCommons/auth
-Set `KEYCLOAK_CUSTOM_THEME_JAR` in `.env` to the path of this jar file.
+Add to the providers directory in Keycloak.
 
 ## Other considerations
 
@@ -133,11 +135,6 @@ For example, to create and save the letsencrypt state in the reverse-proxy home:
 Repeat the above step for both the auth service and web service domain names.
 Then copy the keys and certificates:
 
-    export AUTH_DOMAIN=my_domain_name_hosting_the_auth_service
-    sudo cp /home/reverse-proxy/letsencrypt/live/${AUTH_DOMAIN}/fullchain.pem \
-        /home/reverse-proxy/auth-cert.pem
-    sudo cp /home/reverse-proxy/letsencrypt/live/${AUTH_DOMAIN}/privkey.pem \
-        /home/reverse-proxy/auth-key.pem
     export WEB_DOMAIN=my_domain_hosting_the_back-end_web_service
     sudo cp /home/reverse-proxy/letsencrypt/live/${WEB_DOMAIN}/fullchain.pem \
         /home/reverse-proxy/web-cert.pem
@@ -152,6 +149,6 @@ Reload or restart the reverse proxy container to use the certificate:
 
 A preferred alternative to the above setup is to run letsencrypt on the host.
 An example script can be found at `renewCerts.sh`. In this case, one points
-the `WEB_CERT`, `WEB_KEY`, `AUTH_CERT`, and `AUTH_KEY` directly to the
+the `WEB_CERT`, `WEB_KEY`, directly to the
 `/etc/letsencrypt` paths. The compose script already expects `/etc/letsencrypt`
 so it is a good idea to run letsencrypt manually before launch.
