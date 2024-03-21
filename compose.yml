@@ -23,7 +23,7 @@ services:
     logging:
       driver: journald
   web:
-    image: ghcr.io/philanthropydatacommons/service:20240320-706fad8
+    image: ghcr.io/philanthropydatacommons/service:20240321-ef9f87f
     user: ${WEB_CONTAINER_USER}
     environment:
       - HOST=0.0.0.0
