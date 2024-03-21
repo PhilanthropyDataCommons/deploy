@@ -20,6 +20,12 @@ server {
     proxy_set_header Host $http_host;
     proxy_set_header X-NginX-Proxy true;
 
+    # The overall software version currently deployed in this environment.
+    location = /software-version {
+        root /app;
+        try_files /software-version =404;
+    }
+
     # The PDC API implementation, the web service.
     location / {
         proxy_pass http://web:3000;
