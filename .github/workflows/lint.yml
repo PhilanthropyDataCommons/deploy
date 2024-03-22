@@ -6,6 +6,8 @@ jobs:
   shellcheck:
     name: Shellcheck
     runs-on: ubuntu-latest
+    env:
+      SHELLCHECK_OPTS: -x
     steps:
       - uses: actions/checkout@v3
       - name: Run ShellCheck
