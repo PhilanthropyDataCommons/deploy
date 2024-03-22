@@ -37,6 +37,7 @@ $DOCKER_COMPOSE_COMMAND version || exit 1
 
 test ! -z "$REPOSITORY_PREFIX" || exit 3
 test ! -z "$REPOSITORY_FILE" || exit 4
+test ! -z "$DEPLOYED_VERSION_FILE" || exit 12
 
 function fin() {
     # Exit. Also notify of the result via chat if an API key is present.
@@ -122,5 +123,7 @@ fi
 $DOCKER_COMPOSE_COMMAND -f "$NEW_COMPOSE_FILE" up -d || fin 11
 echo "$NEW_COMPOSE_FILE" > $COMPOSE_NAME_FILE
 
-fin 0
+# Let nginx serve the current version of the software (compose file)
+echo "$VERSION" > $DEPLOYED_VERSION_FILE
 
+fin 0
