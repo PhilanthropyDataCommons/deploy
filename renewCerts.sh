@@ -19,9 +19,10 @@
 
 set -eo pipefail
 
-test -x "$(which certbot)"
+test -x "$(command -v certbot)"
 # Instead of sourcing /home/deploy/.env verbatim, source only strictly formed and used env vars.
-. <(egrep '^(WEB_SERVER_HOSTNAME|REVERSE_PROXY_CONTAINER_GROUP|ZULIP_BASE_URL|ZULIP_BOT_EMAIL_ADDRESS|ZULIP_BOT_API_KEY|ZULIP_STREAM|ZULIP_TOPIC)=[a-zA-Z0-9"\/\:\.\@\_\-]+$' /home/deploy/.env)
+# shellcheck source=.env.example
+. <(grep -E '^(WEB_SERVER_HOSTNAME|REVERSE_PROXY_CONTAINER_GROUP|ZULIP_BASE_URL|ZULIP_BOT_EMAIL_ADDRESS|ZULIP_BOT_API_KEY|ZULIP_STREAM|ZULIP_TOPIC)=[a-zA-Z0-9"\/\:\.\@\_\-]+$' /home/deploy/.env)
 test ! -z "$WEB_SERVER_HOSTNAME"
 test ! -z "$REVERSE_PROXY_CONTAINER_GROUP"
 test ! -z "$ZULIP_BASE_URL"
@@ -43,20 +44,20 @@ function fin() {
         message="❌ Certificate renewals (or checks) for https://${WEB_SERVER_HOSTNAME} FAILED: ${error_message}"
     fi
 
-    curl -X POST ${ZULIP_BASE_URL}/api/v1/messages \
-        -u ${ZULIP_BOT_EMAIL_ADDRESS}:${ZULIP_BOT_API_KEY} \
+    curl -X POST "${ZULIP_BASE_URL}/api/v1/messages" \
+        -u "${ZULIP_BOT_EMAIL_ADDRESS}:${ZULIP_BOT_API_KEY}" \
         --data-urlencode type=stream \
-        --data-urlencode to=${ZULIP_STREAM} \
-        --data-urlencode topic=${ZULIP_TOPIC} \
+        --data-urlencode "to=${ZULIP_STREAM}" \
+        --data-urlencode "topic=${ZULIP_TOPIC}" \
         --data-urlencode "content=${message}"
 
     exit $exit_code
 }
 
-certbot certonly -n --domain=$WEB_SERVER_HOSTNAME --standalone --keep-until-expiring \
-    || fin $(tail -n 10 /var/log/letsencrypt/letsencrypt.log)
+certbot certonly -n --domain="$WEB_SERVER_HOSTNAME" --standalone --keep-until-expiring \
+    || fin "$(tail -n 10 /var/log/letsencrypt/letsencrypt.log)"
 # Make sure the reverse proxy user has read/execute privileges on the cert and key files.
-chgrp -R $REVERSE_PROXY_CONTAINER_GROUP /etc/letsencrypt/{live,archive} \
+chgrp -R "$REVERSE_PROXY_CONTAINER_GROUP" /etc/letsencrypt/{live,archive} \
     || fin "Failed to chgrp /etc/letsencrypt/{live,archive} to $REVERSE_PROXY_CONTAINER_GROUP"
 chmod -R g+rx /etc/letsencrypt/{live,archive} \
     || fin "Failed to add group read and execute permissions to /etc/letsencrypt/{live,archive}"
@@ -67,7 +68,7 @@ chmod -R g+rx /etc/letsencrypt/{live,archive} \
 # break active connections but shouldn't lose sessions.
 docker restart deploy_reverse-proxy_1 \
     || fin "Failed to restart to reverse proxy container"
-(( $(docker ps | grep reverse-proxy | wc -l) == "1" )) \
+(( $(docker ps | grep -c reverse-proxy) == "1" )) \
     || fin "The reverse-proxy container is no longer running"
 
 fin
