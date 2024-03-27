@@ -1,0 +1,61 @@
+name: Trigger deployment on test then prod
+
+on:
+  push:
+    tags:
+    - '*'
+
+env:
+  TAG_TO_DEPLOY: ${{ github.ref_name }}
+  BUILD_SSH_PRIVATE_KEY: ${{ secrets.BUILD_SSH_PRIVATE_KEY }}
+  BUILD_SSH_PUBLIC_KEY: ${{ secrets.BUILD_SSH_PUBLIC_KEY }}
+  MACHINE_ADDRESS: ${{ secrets.MACHINE_ADDRESS }}
+
+jobs:
+  on-main-branch-check:
+    runs-on: ubuntu-latest
+    outputs:
+      on_main: ${{ steps.contains_tag.outputs.retval }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 20
+      - uses: rickstaa/action-contains-tag@v1
+        id: contains_tag
+        with:
+          reference: "main"
+          tag: "${{ env.TAG_TO_DEPLOY }}"
+  trigger-test-deployment:
+    runs-on: ubuntu-latest
+    environment: test
+    steps:
+    - name: Check out repository code to access trigger_deployment.sh
+      uses: actions/checkout@v4
+    - run: ./trigger_deployment.sh
+    - uses: artiz/poll-endpoint@1.0.2
+      with:
+        url: ${{ secrets.DEPLOYED_VERSION_URL }}
+        method: GET
+        expectStatus: 200
+        expectBody: "${{ env.TAG_TO_DEPLOY }}"
+        timeout: 600000
+        interval: 20000
+  trigger-production-deployment:
+    needs:
+    - trigger-test-deployment
+    - on-main-branch-check
+    if: ${{ needs.on-main-branch-check.outputs.on_main == 'true' }}
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+    - name: Check out repository code to access trigger_deployment.sh
+      uses: actions/checkout@v4
+    - run: ./trigger_deployment.sh
+    - uses: artiz/poll-endpoint@1.0.2
+      with:
+        url: ${{ secrets.DEPLOYED_VERSION_URL }}
+        method: GET
+        expectStatus: 200
+        expectBody: "${{ env.TAG_TO_DEPLOY }}"
+        timeout: 600000
+        interval: 20000
