@@ -39,7 +39,7 @@ jobs:
         url: ${{ secrets.DEPLOYED_VERSION_URL }}
         method: GET
         expectStatus: 200
-        expectBody: "${{ env.TAG_TO_DEPLOY }}"
+        expectBodyRegex: "^${{ env.TAG_TO_DEPLOY }}\\W*$"
         timeout: 600000
         interval: 20000
   trigger-production-deployment:
@@ -63,6 +63,6 @@ jobs:
         url: ${{ secrets.DEPLOYED_VERSION_URL }}
         method: GET
         expectStatus: 200
-        expectBody: "${{ env.TAG_TO_DEPLOY }}"
+        expectBodyRegex: "^${{ env.TAG_TO_DEPLOY }}\\W*$"
         timeout: 600000
         interval: 20000
