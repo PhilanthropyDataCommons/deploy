@@ -47,6 +47,16 @@ The `deploy.sh` gets sent to the machines manually rather than automatically.
 
 The `deploy.sh` uses environment variables from a `.env` file.
 
+The `deploy.sh` runs on hosts that run PDC software services. This is usually a
+test and production environment.
+
+## trigger_deployment.sh
+
+The `trigger_deployment.sh` script runs on the continuous integration server.
+
+See `.github/workflows/trigger_deployments.yml` and `trigger_deployment.sh` for
+more details.
+
 ## keycloakInitDb.sh
 
 The `keycloakInitDb.sh` can be used to initialize a postgres database for the
