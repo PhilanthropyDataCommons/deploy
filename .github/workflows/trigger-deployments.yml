@@ -7,9 +7,6 @@ on:
 
 env:
   TAG_TO_DEPLOY: ${{ github.ref_name }}
-  BUILD_SSH_PRIVATE_KEY: ${{ secrets.BUILD_SSH_PRIVATE_KEY }}
-  BUILD_SSH_PUBLIC_KEY: ${{ secrets.BUILD_SSH_PUBLIC_KEY }}
-  MACHINE_ADDRESS: ${{ secrets.MACHINE_ADDRESS }}
 
 jobs:
   on-main-branch-check:
@@ -28,6 +25,11 @@ jobs:
   trigger-test-deployment:
     runs-on: ubuntu-latest
     environment: test
+    env:
+      BUILD_SSH_PRIVATE_KEY: ${{ secrets.BUILD_SSH_PRIVATE_KEY }}
+      BUILD_SSH_PUBLIC_KEY: ${{ secrets.BUILD_SSH_PUBLIC_KEY }}
+      MACHINE_ADDRESS: ${{ secrets.MACHINE_ADDRESS }}
+      KNOWN_HOSTS: ${{ secrets.KNOWN_HOSTS }}
     steps:
     - name: Check out repository code to access trigger_deployment.sh
       uses: actions/checkout@v4
@@ -47,6 +49,11 @@ jobs:
     if: ${{ needs.on-main-branch-check.outputs.on_main == 'true' }}
     runs-on: ubuntu-latest
     environment: production
+    env:
+      BUILD_SSH_PRIVATE_KEY: ${{ secrets.BUILD_SSH_PRIVATE_KEY }}
+      BUILD_SSH_PUBLIC_KEY: ${{ secrets.BUILD_SSH_PUBLIC_KEY }}
+      MACHINE_ADDRESS: ${{ secrets.MACHINE_ADDRESS }}
+      KNOWN_HOSTS: ${{ secrets.KNOWN_HOSTS }}
     steps:
     - name: Check out repository code to access trigger_deployment.sh
       uses: actions/checkout@v4
