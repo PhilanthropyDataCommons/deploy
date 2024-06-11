@@ -24,6 +24,7 @@ services:
         condition: service_healthy
     logging:
       driver: journald
+    restart: unless-stopped
   web:
     image: ghcr.io/philanthropydatacommons/service:20240604-3220074
     user: ${WEB_CONTAINER_USER}
@@ -51,6 +52,7 @@ services:
         condition: service_healthy
     logging:
       driver: journald
+    restart: unless-stopped
   database:
     image: bitnami/postgresql:14.8.0-debian-11-r15
     user: ${DATABASE_CONTAINER_USER}
@@ -77,3 +79,4 @@ services:
       interval: 7s
     logging:
       driver: journald
+    restart: unless-stopped
