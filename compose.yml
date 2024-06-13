@@ -1,7 +1,7 @@
 version: "2.4"
 services:
   reverse-proxy:
-    image: bitnami/nginx:1.23.3-debian-11-r30
+    image: bitnami/nginx:1.25.5-debian-12-r7
     user: ${REVERSE_PROXY_CONTAINER_USER}
     group_add:
       - ${REVERSE_PROXY_CONTAINER_GROUP}
@@ -54,7 +54,7 @@ services:
       driver: journald
     restart: unless-stopped
   database:
-    image: bitnami/postgresql:14.8.0-debian-11-r15
+    image: bitnami/postgresql:14.12.0-debian-12-r11
     user: ${DATABASE_CONTAINER_USER}
     # For local development it can be useful to expose `ports: 5432:${PG_PORT}`.
     volumes:
