@@ -26,7 +26,7 @@ services:
       driver: journald
     restart: always
   web:
-    image: ghcr.io/philanthropydatacommons/service:20241010-eab5a6c
+    image: ghcr.io/philanthropydatacommons/service:20241010-f52cdfe
     user: ${WEB_CONTAINER_USER}
     environment:
       - HOST=0.0.0.0
