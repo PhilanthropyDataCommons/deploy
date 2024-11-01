@@ -1,0 +1,21 @@
+name: "PR Analytics"
+on:
+  workflow_dispatch:
+    inputs:
+      report_date_start:
+        description: "Report date start(d/MM/yyyy)"
+      report_date_end:
+        description: "Report date end(d/MM/yyyy)"
+jobs:
+  create-report:
+    name: "Create report"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Run script for analytics"
+        uses: AlexSim93/pull-request-analytics-action@v4
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TIMEZONE: "America/Chicago"
+          REPORT_DATE_START: ${{ inputs.report_date_start }}
+          REPORT_DATE_END: ${{ inputs.report_date_end }}
+          ALLOW_ANALYTICS: false
