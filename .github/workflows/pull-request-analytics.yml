@@ -15,6 +15,9 @@ jobs:
         uses: AlexSim93/pull-request-analytics-action@v4
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_OWNERS_REPOS: PhilanthropyDataCommons/deploy
+          GITHUB_OWNER_FOR_ISSUE: PhilanthropyDataCommons
+          GITHUB_REPO_FOR_ISSUE: deploy
           TIMEZONE: "America/Chicago"
           REPORT_DATE_START: ${{ inputs.report_date_start }}
           REPORT_DATE_END: ${{ inputs.report_date_end }}
